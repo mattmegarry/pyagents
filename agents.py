@@ -5,6 +5,8 @@ from pyodide.ffi import create_proxy  # type: ignore
 
 CANVAS_HEIGHT = window.canvasAttributes.height
 CANVAS_WIDTH = window.canvasAttributes.width
+N = 100
+agents = []
 
 
 def degToRad(degrees):
@@ -12,7 +14,7 @@ def degToRad(degrees):
 
 
 class Agent:
-    def __init__(self, ctx):
+    def __init__(self):
         self.x = random.randint(0, CANVAS_WIDTH)
         self.y = random.randint(0, CANVAS_HEIGHT)
         self.rotation = random.randint(0, 360)
@@ -26,18 +28,20 @@ class Agent:
         self.draw_body(ctx)
 
 
-def renderFrame(ctx, canvas, agents):
+def renderFrame(ctx, canvas):
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    agents[0].render(ctx)
+    for agent in agents:
+        agent.render(ctx)
 
 
 def init():
     canvas = document.getElementById("canvas")
     ctx = canvas.getContext("2d")
-    agents = [Agent(ctx)]
-    renderFrame(ctx, canvas, agents)
-    drawThingsProxy = create_proxy(renderFrame)
-    setInterval(drawThingsProxy, 17, ctx, canvas)
+    for i in range(N):
+        agents.append(Agent())
+    renderFrame(ctx, canvas)
+    renderFrameProxy = create_proxy(renderFrame)
+    setInterval(renderFrameProxy, 17, ctx, canvas)
 
 
 init()
