@@ -6,16 +6,26 @@
     <script defer src="https://pyscript.net/latest/pyscript.js"></script>
   </head>
   <body>
-    <div id="content"></div>
+    <canvas id="canvas" width="500" height="500" style="background-color: blue">
+    </canvas>
     <!-- prettier-ignore -->
     <py-config>
 
     </py-config>
     <!-- prettier-ignore -->
     <py-script> 
-        from js import document
-        document.getElementById("content").innerHTML = "I came from python!"; 
-        js.window.console.log("I'm here too.")
+        from js import document, setInterval
+
+        def drawThings(ctx):
+            ctx.fillStyle = "red"
+            ctx.fillRect(0, 0, 100, 100)
+
+        def init():
+            canvas = document.getElementById("canvas")
+            ctx = canvas.getContext("2d")
+            drawThings(ctx)
+	    
+        init()    
     </py-script>
   </body>
 </html>
