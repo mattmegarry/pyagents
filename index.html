@@ -5,5 +5,17 @@
     <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css" />
     <script defer src="https://pyscript.net/latest/pyscript.js"></script>
   </head>
-  <body></body>
+  <body>
+    <div id="content"></div>
+    <!-- prettier-ignore -->
+    <py-config>
+
+    </py-config>
+    <!-- prettier-ignore -->
+    <py-script> 
+        from js import document
+        document.getElementById("content").innerHTML = "I came from python!"; 
+        js.window.console.log("I'm here too.")
+    </py-script>
+  </body>
 </html>
