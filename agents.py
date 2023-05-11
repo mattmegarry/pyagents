@@ -7,6 +7,7 @@ CANVAS_HEIGHT = window.canvasAttributes.height
 CANVAS_WIDTH = window.canvasAttributes.width
 N = 100
 agents = []
+agent_radius = 3
 
 
 def update_rotation(current_rotation, degrees):
@@ -24,7 +25,7 @@ class Agent:
 
     def draw_body(self, ctx):
         ctx.beginPath()
-        ctx.arc(self.x, self.y, 3, 0, 2 * math.pi)
+        ctx.arc(self.x, self.y, agent_radius, 0, 2 * math.pi)
         ctx.stroke()
 
     def update_rotation_if_out_of_bounds(self):
@@ -37,14 +38,31 @@ class Agent:
         if self.y > CANVAS_HEIGHT:
             self.rotation = 270
 
+    def collision(self, other):
+        return math.sqrt((self.x - other.x)**2 + (self.y - other.y)**2) < (agent_radius * 2)
+
+    def rotate_and_jump_both_agents_if_collision(self):
+        for other in agents:
+            if self == other:
+                continue
+            if self.collision(other):
+                self.rotation = (self.rotation + 180) % 360
+                other.rotation = (other.rotation + 180) % 360
+                self.move(5)
+                other.move(5)
+
+    def move(self, distance=1):
+        angle_rad = math.radians(self.rotation)
+        delta_x = distance * math.cos(angle_rad)
+        delta_y = distance * math.sin(angle_rad)
+        self.x += delta_x
+        self.y += delta_y
+
     def update(self):
         self.rotation = update_rotation(self.rotation, random.randint(-10, 10))
         self.update_rotation_if_out_of_bounds()
-        angle_rad = math.radians(self.rotation)
-        delta_x = math.cos(angle_rad)
-        delta_y = math.sin(angle_rad)
-        self.x += delta_x
-        self.y += delta_y
+        self.rotate_and_jump_both_agents_if_collision()
+        self.move()
 
     def render(self, ctx):
         self.draw_body(ctx)
