@@ -14,16 +14,23 @@
     </py-config>
     <!-- prettier-ignore -->
     <py-script> 
+        import random
         from js import document, setInterval
+        from pyodide.ffi import create_proxy
 
-        def drawThings(ctx):
+        def drawFrame(ctx, canvas):
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            rectheight = random.randint(0, 100)
             ctx.fillStyle = "red"
-            ctx.fillRect(0, 0, 100, 100)
+            ctx.fillRect(0, 0, 100, rectheight)          
 
         def init():
             canvas = document.getElementById("canvas")
             ctx = canvas.getContext("2d")
-            drawThings(ctx)
+            drawFrame(ctx, canvas)
+            
+            drawThingsProxy = create_proxy(drawFrame)
+            interval_id = setInterval(drawThingsProxy, 17, ctx, canvas)
 	    
         init()    
     </py-script>
