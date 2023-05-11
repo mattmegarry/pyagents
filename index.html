@@ -6,33 +6,23 @@
     <script defer src="https://pyscript.net/latest/pyscript.js"></script>
   </head>
   <body>
-    <canvas id="canvas" width="500" height="500" style="background-color: blue">
-    </canvas>
+    <script>
+      window.canvasAttributes = {
+        width: 300,
+        height: 300,
+      };
+
+      document.addEventListener("DOMContentLoaded", function () {
+        var canvas = document.getElementById("canvas");
+        canvas.width = window.canvasAttributes.width;
+        canvas.height = window.canvasAttributes.height;
+      });
+    </script>
+    <canvas id="canvas" style="border: solid 3px black"> </canvas>
     <!-- prettier-ignore -->
     <py-config>
 
     </py-config>
-    <!-- prettier-ignore -->
-    <py-script> 
-        import random
-        from js import document, setInterval
-        from pyodide.ffi import create_proxy
-
-        def drawFrame(ctx, canvas):
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            rectheight = random.randint(0, 100)
-            ctx.fillStyle = "red"
-            ctx.fillRect(0, 0, 100, rectheight)          
-
-        def init():
-            canvas = document.getElementById("canvas")
-            ctx = canvas.getContext("2d")
-            drawFrame(ctx, canvas)
-            
-            drawThingsProxy = create_proxy(drawFrame)
-            interval_id = setInterval(drawThingsProxy, 17, ctx, canvas)
-	    
-        init()    
-    </py-script>
+    <py-script src="agents.py"></py-script>
   </body>
 </html>
