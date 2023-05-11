@@ -9,8 +9,11 @@ N = 100
 agents = []
 
 
-def degToRad(degrees):
-    return (degrees * math.pi) / 180
+def update_rotation(current_rotation, degrees):
+    new_rotation = (current_rotation + degrees) % 360
+    if new_rotation < 0:
+        new_rotation += 360
+    return new_rotation
 
 
 class Agent:
@@ -24,13 +27,22 @@ class Agent:
         ctx.arc(self.x, self.y, 3, 0, 2 * math.pi)
         ctx.stroke()
 
+    def update(self):
+        self.rotation = update_rotation(self.rotation, random.randint(-10, 10))
+        angle_rad = math.radians(self.rotation)
+        delta_x = math.cos(angle_rad)
+        delta_y = math.sin(angle_rad)
+        self.x += delta_x
+        self.y += delta_y
+
     def render(self, ctx):
         self.draw_body(ctx)
 
 
-def renderFrame(ctx, canvas):
+def update(ctx, canvas):
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     for agent in agents:
+        agent.update()
         agent.render(ctx)
 
 
@@ -39,9 +51,9 @@ def init():
     ctx = canvas.getContext("2d")
     for i in range(N):
         agents.append(Agent())
-    renderFrame(ctx, canvas)
-    renderFrameProxy = create_proxy(renderFrame)
-    setInterval(renderFrameProxy, 17, ctx, canvas)
+    update(ctx, canvas)
+    updateProxy = create_proxy(update)
+    setInterval(updateProxy, 17, ctx, canvas)
 
 
 init()
