@@ -27,8 +27,19 @@ class Agent:
         ctx.arc(self.x, self.y, 3, 0, 2 * math.pi)
         ctx.stroke()
 
+    def update_rotation_if_out_of_bounds(self):
+        if self.x < 0:
+            self.rotation = 0
+        if self.x > CANVAS_WIDTH:
+            self.rotation = 180
+        if self.y < 0:
+            self.rotation = 90
+        if self.y > CANVAS_HEIGHT:
+            self.rotation = 270
+
     def update(self):
         self.rotation = update_rotation(self.rotation, random.randint(-10, 10))
+        self.update_rotation_if_out_of_bounds()
         angle_rad = math.radians(self.rotation)
         delta_x = math.cos(angle_rad)
         delta_y = math.sin(angle_rad)
